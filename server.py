@@ -17,6 +17,9 @@ def get_weather():
         request.args.get('city').strip()) else "San Francisco"
     weather_data = get_current_weather(city)
 
+    if not weather_data['cod'] == 200:
+        return render_template('not-found.html')
+
     return render_template(
         "weather.html",
         title=weather_data["name"],
