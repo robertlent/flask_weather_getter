@@ -13,7 +13,8 @@ def index():
 
 @app.route('/weather')
 def get_weather():
-    city = request.args.get('city')
+    city = request.args.get('city') if bool(
+        request.args.get('city').strip()) else "San Francisco"
     weather_data = get_current_weather(city)
 
     return render_template(
