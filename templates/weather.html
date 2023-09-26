@@ -5,15 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }} Weather</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+    <script src="{{ url_for('static', filename='scripts/populate.js') }}"></script>
 </head>
 <body>
-    <h1>{{ title }} Weather</h1>
+    <h1>Weather in {{ title }}</h1>
 
-    <p>{{ status }} and {{ temp }}&deg;</p>
-    <p>Feels like {{ feels_like }}&deg;</p>
+    <p>Current weather: {{ status }} and {{ temp }}&#8457;</p>
+    <p>Feels like {{ feels_like }}&#8457;</p>
 
     <form action="/weather">
-        <input type="text" name="city" id="city" placeholder="Enter a city">
+        <select class="form-select" id="country" name="country">
+            <option value="">Select Country</option>
+        </select>
+
+        <select class="form-select" id="state" name="state">
+            <option value="">Select State</option>
+        </select>
+
+        <select class="form-select" id="city" name="city">
+            <option value="">Select City</option>
+        </select>
+
         <button type="submit">Submit</button>
     </form>
 </body>

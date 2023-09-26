@@ -6,7 +6,7 @@ import os
 load_dotenv()
 
 
-def get_current_weather(city='San Francisco'):
+def get_current_weather(city='San Francisco,CA,US'):
     request_url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&APPID={os.getenv("API_KEY")}&units=imperial'
 
     weather_data = requests.get(request_url).json()
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     city = input("\nPlease enter a city name: ")
 
     if not bool(city.strip()):
-        city = "San Francisco"
+        city = "San Francisco,CA,US"
 
     weather_data = get_current_weather(city)
 

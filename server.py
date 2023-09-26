@@ -14,7 +14,16 @@ def index():
 @app.route('/weather')
 def get_weather():
     city = request.args.get('city') if bool(
-        request.args.get('city').strip()) else "San Francisco"
+        request.args.get('city').strip()) else "San Francisco,CA,US"
+    state = request.args.get('state')[2:]
+    country = request.args.get('country')
+
+    if state:
+        city = f'{city},{state}'
+
+    if country:
+        city = f'{city},{country}'
+
     weather_data = get_current_weather(city)
 
     if not weather_data['cod'] == 200:
@@ -22,7 +31,7 @@ def get_weather():
 
     return render_template(
         "weather.html",
-        title=weather_data["name"],
+        title=city,
         status=weather_data["weather"][0]["description"].capitalize(),
         temp=f"{weather_data['main']['temp']:.1f}",
         feels_like=f"{weather_data['main']['feels_like']:.1f}"
