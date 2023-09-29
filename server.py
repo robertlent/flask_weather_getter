@@ -13,28 +13,34 @@ def index():
 
 @app.route('/weather')
 def get_weather():
-    city = request.args.get('city') if bool(
-        request.args.get('city').strip()) else "San Francisco,CA,US"
-    state = request.args.get('state')[2:]
-    country = request.args.get('country')
+    city = request.args.get("city")
+    state = request.args.get("state")
+    country = request.args.get("country")
+    err = False
 
-    if state:
-        city = f'{city},{state}'
+    if all([city is not None, city != '',
+            state is not None, state != '',
+            country is not None, country != '']):
+        city = request.args.get('city').strip()
+        state = request.args.get('state').strip()
+        country = request.args.get('country').strip()
+    else:
+        err = True
+        city = 'San Francisco'
+        state = 'CA'
+        country = 'US'
 
-    if country:
-        city = f'{city},{country}'
+    city = f'{city},{state},{country}'
 
     weather_data = get_current_weather(city)
-
-    if not weather_data['cod'] == 200:
-        return render_template('not-found.html')
 
     return render_template(
         "weather.html",
         title=city,
         status=weather_data["weather"][0]["description"].capitalize(),
         temp=f"{weather_data['main']['temp']:.1f}",
-        feels_like=f"{weather_data['main']['feels_like']:.1f}"
+        feels_like=f"{weather_data['main']['feels_like']:.1f}",
+        err=err
     )
 
 
