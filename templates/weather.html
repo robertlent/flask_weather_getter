@@ -14,8 +14,8 @@
 
     {% else %}
 
-    <h2>Correct location information was not supplied</h2>
-    <h2>Showing current weather for {{ title }}</h2>
+    <h3>{{ err_msg }}</h3>
+    <h2>Showing current weather for {{ title }} instead</h2>
 
     {% endif %}
 

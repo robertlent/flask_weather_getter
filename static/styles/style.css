@@ -16,10 +16,15 @@ body {
 
 h1,
 h2,
+h3,
 p {
     display: block;
     text-align: center;
     margin: 0 auto 20px auto;
+}
+
+h3 {
+    color: red;
 }
 
 select,

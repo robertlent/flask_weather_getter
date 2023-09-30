@@ -17,6 +17,7 @@ def get_weather():
     state = request.args.get("state")
     country = request.args.get("country")
     err = False
+    err_msg = ""
 
     if all([city is not None, city != '',
             state is not None, state != '',
@@ -26,6 +27,7 @@ def get_weather():
         country = request.args.get('country').strip()
     else:
         err = True
+        err_msg = 'City, State, or Country parameter was missing'
         city = 'San Francisco'
         state = 'CA'
         country = 'US'
@@ -34,13 +36,20 @@ def get_weather():
 
     weather_data = get_current_weather(city)
 
+    if not weather_data['cod'] == 200:
+        err = True
+        err_msg = f'I was unable to retrieve weather data for {city}'
+        city = 'San Francisco,CA,US'
+        weather_data = get_current_weather(city)
+
     return render_template(
         "weather.html",
         title=city,
         status=weather_data["weather"][0]["description"].capitalize(),
         temp=f"{weather_data['main']['temp']:.1f}",
         feels_like=f"{weather_data['main']['feels_like']:.1f}",
-        err=err
+        err=err,
+        err_msg=err_msg
     )
 
 
