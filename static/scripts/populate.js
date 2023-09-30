@@ -6,29 +6,31 @@ fetch('https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/
     .then(response => response.json())
     .then(data => {
         data.forEach(country => {
-            countriesStatesCities[country['iso2']] = {};
+            if (country['states'] && country['states'].length > 0) {
+                countriesStatesCities[country['iso2']] = {};
 
-            if (country['states']) {
+                let hasCities = false;
+
                 country['states'].forEach(state => {
-                    countriesStatesCities[country['iso2']][state['name']] = [];
+                    if (state['cities'] && state['cities'].length > 0) {
+                        countriesStatesCities[country['iso2']][state['name']] = [];
 
-                    if (state['cities']) {
                         state.cities.forEach(city => {
                             countriesStatesCities[country['iso2']][state['name']].push(city['name']);
                         })
+
+                        states[country['iso2'] + state['state_code']] = state['name']
+
+                        hasCities = true;
                     }
                 })
+
+                if (hasCities) {
+                    countries[country['iso2']] = country['name'];
+                } else {
+                    delete countries[country['iso2']];
+                }
             }
-        })
-
-        data.forEach(country => {
-            countries[country['iso2']] = country['name'];
-        })
-
-        data.forEach(country => {
-            country['states'].forEach(state => {
-                states[country['iso2'] + state['state_code']] = state['name']
-            })
         })
 
         populateSelect(document.getElementById('country'), Object.keys(countries), Object.values(countries));
@@ -46,7 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const stateNames = Object.keys(countriesStatesCities[countryCode]);
         const stateCodes = Object.keys(states).filter(stateCode => stateCode.startsWith(countryCode));
+
         populateSelect(stateSelect, stateCodes, stateNames);
+        populateSelect(citySelect, '', '');
     });
 
     stateSelect.addEventListener('change', () => {
@@ -55,8 +59,20 @@ document.addEventListener('DOMContentLoaded', () => {
         citySelect.value = '';
 
         const cities = countriesStatesCities[countryCode][state];
+
         populateSelect(citySelect, cities, cities);
     });
+
+    const dropdowns = document.querySelectorAll('.form-select');
+
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('change', () => {
+            const areAllDropdownsSelected = dropdowns.every(dropdown => dropdown.value !== '');
+
+            document.querySelector('#submit').setAttribute('disabled') = !areAllDropdownsSelected;
+        });
+    });
+
 })
 
 function populateSelect(select, values, displayText) {
@@ -83,10 +99,12 @@ function populateSelect(select, values, displayText) {
             break;
     }
 
-    values.forEach((value, index) => {
-        option = document.createElement('option');
-        option.value = value;
-        option.textContent = displayText[index];
-        select.appendChild(option);
-    })
+    if (values.length) {
+        values.forEach((value, index) => {
+            option = document.createElement('option');
+            option.value = value;
+            option.textContent = displayText[index];
+            select.appendChild(option);
+        })
+    }
 }
