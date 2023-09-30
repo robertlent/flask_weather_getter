@@ -63,13 +63,17 @@ document.addEventListener('DOMContentLoaded', () => {
         populateSelect(citySelect, cities, cities);
     });
 
-    const dropdowns = document.querySelectorAll('.form-select');
+    const dropdowns = Array.from(document.querySelectorAll('.form-select'));
 
     dropdowns.forEach(dropdown => {
         dropdown.addEventListener('change', () => {
-            const areAllDropdownsSelected = dropdowns.every(dropdown => dropdown.value !== '');
+            const areAllDropdownsSelected = dropdowns.every(dropdown => dropdown.selectedIndex !== 0);
 
-            document.querySelector('#submit').setAttribute('disabled') = !areAllDropdownsSelected;
+            if (!areAllDropdownsSelected) {
+                document.querySelector('#submit').setAttribute('disabled', 'disabled');
+            } else {
+                document.querySelector('#submit').removeAttribute('disabled');
+            }
         });
     });
 
